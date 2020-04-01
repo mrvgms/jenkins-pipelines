@@ -4,11 +4,24 @@ node {
 		buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')), 
 		
 		// Below line triggers this job every minute
-		pipelineTriggers([pollSCM('* * * * *')])
+		pipelineTriggers([pollSCM('* * * * *')]),
+		parameters([choice(choices: [
+			'dev1.merv3.com', 
+			'qa1.merv3.com', 
+			'stage1.merv3.com', 
+			'prod1.merv3.com'], 
+			description: 'Please choose an environment', 
+			name: 'ENVIR')]), 
 		])
+
+        // Pulls a repo from developer
+
 	stage("Pull Repo"){
 		git   'https://github.com/farrukh90/cool_website.git'
-	}
+    }
+
+    //Installs web server on different environment
+    
 	stage("Install Prerequisites"){
 		sh """
 		ssh centos@dev1.merv3.com                 sudo yum install httpd -y
