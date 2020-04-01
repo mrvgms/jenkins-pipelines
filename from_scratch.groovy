@@ -11,20 +11,20 @@ node {
 	}
 	stage("Install Prerequisites"){
 		sh """
-		ssh centos@jenkins_worker1.merv3.com                 sudo yum install httpd -y
+		ssh centos@dev.merv3.com                 sudo yum install httpd -y
 		"""
 	}
 	stage("Copy artifacts"){
 		sh """
-		scp -r *  centos@jenkins_worker1.merv3.com:/tmp
-		ssh centos@jenkins_worker1.merv3.com                 sudo cp -r /tmp/index.html /var/www/html/
-		ssh centos@jenkins_worker1.merv3.com                 sudo cp -r /tmp/style.css /var/www/html/
-		ssh centos@jenkins_worker1.merv3.com				   sudo chown centos:centos /var/www/html/
-		ssh centos@jenkins_worker1.merv3.com				   sudo chmod 777 /var/www/html/*
+		scp -r *  centos@dev.merv3.com:/tmp
+		ssh centos@jdev.merv3.com                 sudo cp -r /tmp/index.html /var/www/html/
+		ssh centos@jdev.merv3.com                 sudo cp -r /tmp/style.css /var/www/html/
+		ssh centos@jdev.merv3.com				   sudo chown centos:centos /var/www/html/
+		ssh centos@jdev.merv3.com				   sudo chmod 777 /var/www/html/*
 		"""
 	}
 	stage("Restart web server"){
-		sh "ssh centos@jenkins_worker1.merv3.com                 sudo systemctl restart httpd"
+		sh "ssh centos@jdev.merv3.com                 sudo systemctl restart httpd"
 	}
 	stage("Slack"){
 		slackSend color: '#BADA55', message: 'Hello, World!'
