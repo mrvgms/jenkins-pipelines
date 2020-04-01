@@ -14,31 +14,32 @@ node {
 			name: 'ENVIR')]), 
 		])
 
-        // Pulls a repo from developer
-
+		// Pulls a repo from developer
 	stage("Pull Repo"){
 		git   'https://github.com/farrukh90/cool_website.git'
-    }
-
-    //Installs web server on different environment
-    
+	}
+		//Installs web server on different environment
 	stage("Install Prerequisites"){
 		sh """
-		ssh centos@dev1.merv3.com                 sudo yum install httpd -y
+		ssh centos@${ENVIR}                 sudo yum install httpd -y
 		"""
 	}
+		//Copies over developers files to different environment
 	stage("Copy artifacts"){
 		sh """
-		scp -r *  centos@dev1.merv3.com:/tmp
-		ssh centos@jdev1.merv3.com                 sudo cp -r /tmp/index.html /var/www/html/
-		ssh centos@jdev1.merv3.com                 sudo cp -r /tmp/style.css /var/www/html/
-		ssh centos@jdev1.merv3.com				   sudo chown centos:centos /var/www/html/
-		ssh centos@jdev1.merv3.com				   sudo chmod 777 /var/www/html/*
+		scp -r *  centos@${ENVIR}:/tmp
+		ssh centos@${ENVIR}                 sudo cp -r /tmp/index.html /var/www/html/
+		ssh centos@${ENVIR}                 sudo cp -r /tmp/style.css /var/www/html/
+		ssh centos@${ENVIR}				    sudo chown centos:centos /var/www/html/
+		ssh centos@${ENVIR}				    sudo chmod 777 /var/www/html/*
 		"""
 	}
+		//Restarts web server
 	stage("Restart web server"){
-		sh "ssh centos@jdev1.merv3.com                 sudo systemctl restart httpd"
+		sh "ssh centos@dev1.merv3.com                 sudo systemctl restart httpd"
 	}
+
+		//Sends a message to slack
 	stage("Slack"){
 		slackSend color: '#BADA55', message: 'Hello, World!'
 	}
