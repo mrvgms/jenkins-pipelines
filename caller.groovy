@@ -13,14 +13,14 @@ echo "hello"
 } 
 
 stage("Stage3"){ 
-
-echo "hello" 
+// calls another job called "Script"
+echo "Script" 
 
 } 
 
 stage("Stage4"){ 
-
-build 'Template' 
+// calls another job called "Template2"
+build 'Template2' 
 
 } 
 
