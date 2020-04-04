@@ -13,7 +13,7 @@ node {
 			'stage1.merv3.com', 
 			'prod1.merv3.com'], 
 			description: 'Please choose an environment', 
-			name: 'ENVIR')]), 
+			name: 'ENVIR'), 
           
 		    // Asks for version
             choice(choices: [ 
@@ -24,9 +24,7 @@ node {
 				'v0.5'], 
 		    description: 'Which version should we deploy?', 
 		    name: 'Version')
-
-
-
+		    ])
 
 		])
 
