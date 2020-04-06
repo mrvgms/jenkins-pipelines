@@ -14,6 +14,3 @@ node {
 		stage("Stage5"){
 	}
 }
-
-
-
