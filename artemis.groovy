@@ -26,13 +26,13 @@ choice(choices:
 
 [ 
 
-'dev1.acirrustech.com',  
+'dev1.merv3.com',  
 
-'qa1.acirrustech.com',  
+'qa1.merv3.com',  
 
-'stage1.acirrustech.com',  
+'stage1.merv3.com',  
 
-'prod1.acirrustech.com'],  
+'prod1.merv3.com'],  
 
 description: 'Please provide an environment to build the application',  
 
