@@ -52,5 +52,22 @@ aws ecr get-login-password --region eu-west-2 | docker login --username AWS --pa
 } 
 
 } 
+stage("Build Docker Image"){ 
+
+timestamps { 
+
+ws { 
+
+sh ''' 
+
+docker build -t artemis:${Version} . 
+
+''' 
+
+} 
+
+} 
+
+} 
 
 }
