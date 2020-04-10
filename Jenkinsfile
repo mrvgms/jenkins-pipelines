@@ -7,9 +7,15 @@ pipeline {
       }
     }
 
-    stage('') {
+    stage('error') {
       steps {
         sh 'echo "hello"'
+      }
+    }
+
+    stage('Stage3/ Print Message') {
+      steps {
+        echo 'Stage 3'
       }
     }
 
