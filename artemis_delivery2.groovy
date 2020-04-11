@@ -14,21 +14,20 @@ node {
 				'0.9',
 				'10',
 			], 
-
 		description: 'Which version of the app should I deploy? ', 
 		name: 'Version')])])
 		stage("Stage1"){
 			timestamps {
 				ws {
-				checkout([$class: 'GitSCM', branches: [[name: '${Version}']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/farrukh90/artemis.git']]])
+					checkout([$class: 'GitSCM', branches: [[name: '${Version}']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/farrukh90/artemis.git']]]) }
 			}
 		}
 		stage("Get Credentials"){
 		timestamps {
 			ws{
 				sh '''
-           aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 783098852858.dkr.ecr.eu-west-2.amazonaws.com/artemis				
-					'''
+                  aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 783098852858.dkr.ecr.eu-west-2.amazonaws.com/artemis					
+                   '''
 				}
 			}
 		}
@@ -45,8 +44,8 @@ node {
 			timestamps {
 				ws {
 					sh '''
-                    docker tag artemis:${Version} 783098852858.dkr.ecr.eu-west-2.amazonaws.com/artemis:${Version}
-					'''
+                      docker tag artemis:latest 783098852858.dkr.ecr.eu-west-2.amazonaws.com/artemis:${Version}
+				       '''
 					}
 				}
 			}
@@ -54,7 +53,7 @@ node {
 			timestamps {
 				ws {
 					sh '''
-					docker push 783098852858.dkr.ecr.eu-west-2.amazonaws.com/artemis:${Version}
+						docker push 783098852858.dkr.ecr.eu-west-2.amazonaws.com/artemis:${Version}
 						'''
 				}
 			}
@@ -71,7 +70,7 @@ node {
 			timestamps {
 				ws {
 					sh '''
-						ssh centos@${ENVIR} $(aws ecr get-login --no-include-email --region eu-west-2)
+						ssh centos@dev1.merv3.com $(aws ecr get-login --no-include-email --region eu-west-2)
 						'''
 				}
 			}
@@ -82,10 +81,10 @@ node {
 					try {
 						sh '''
 							#!/bin/bash
-							IMAGES=$(ssh centos@${ENVIR} docker ps -aq) 
+							IMAGES=$(ssh centos@dev1.merv3.com docker ps -aq) 
 							for i in \$IMAGES; do
-								ssh centos@${ENVIR} docker stop \$i
-								ssh centos@${ENVIR} docker rm \$i
+								ssh centos@dev1.merv3.com docker stop \$i
+								ssh centos@dev1.merv3.com docker rm \$i
 							done 
 							'''
 					} catch(e) {
@@ -99,7 +98,7 @@ node {
 		timestamps {
 			ws {
 				sh '''
-					ssh centos@${ENVIR} docker run -dti -p 5001:5000 783098852858.dkr.ecr.eu-west-2.amazonaws.com/artemis:${Version}
+					ssh centos@dev1.merv3.com docker run -dti -p 5001:5000 783098852858.dkr.ecr.eu-west-2.amazonaws.com/artemis:${Version}
 					'''
             }
         }
