@@ -14,6 +14,7 @@ node {
 				'0.9',
 				'10',
 			], 
+
 		description: 'Which version of the app should I deploy? ', 
 		name: 'Version')])])
 		stage("Stage1"){
@@ -26,7 +27,8 @@ node {
 		timestamps {
 			ws{
 				sh '''
-aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 783098852858.dkr.ecr.eu-west-2.amazonaws.com/artemis					'''
+                 aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 783098852858.dkr.ecr.eu-west-2.amazonaws.com/artemis					'''
+					'''
 				}
 			}
 		}
@@ -69,7 +71,7 @@ aws ecr get-login-password --region eu-west-2 | docker login --username AWS --pa
 			timestamps {
 				ws {
 					sh '''
-						ssh centos@dev1.merv3.com $(aws ecr get-login --no-include-email --region eu-west-2)
+						ssh centos@${ENVIR} $(aws ecr get-login --no-include-email --region eu-west-2)
 						'''
 				}
 			}
@@ -80,10 +82,10 @@ aws ecr get-login-password --region eu-west-2 | docker login --username AWS --pa
 					try {
 						sh '''
 							#!/bin/bash
-							IMAGES=$(ssh centos@dev1.merv3.com docker ps -aq) 
+							IMAGES=$(ssh centos@${ENVIR} docker ps -aq) 
 							for i in \$IMAGES; do
-								ssh centos@dev1.merv3.com docker stop \$i
-								ssh centos@dev1.merv3.com docker rm \$i
+								ssh centos@${ENVIR} docker stop \$i
+								ssh centos@${ENVIR} docker rm \$i
 							done 
 							'''
 					} catch(e) {
@@ -97,9 +99,9 @@ aws ecr get-login-password --region eu-west-2 | docker login --username AWS --pa
 		timestamps {
 			ws {
 				sh '''
-					ssh centos@dev1.merv3.com docker run -dti -p 5001:5000 783098852858.dkr.ecr.eu-west-2.amazonaws.com/artemis:${Version}
+					ssh centos@${ENVIR} docker run -dti -p 5001:5000 783098852858.dkr.ecr.eu-west-2.amazonaws.com/artemis:${Version}
 					'''
-				}
-			}
-		}
+            }
+        }
+    }
 }
